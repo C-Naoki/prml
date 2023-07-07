@@ -72,8 +72,8 @@ class Bernoulli(RandomVariable):
             self._ml(X)
 
     def _ml(self, X):
-        n_zeros = np.count_nonzero((X == 0).astype(np.int))
-        n_ones = np.count_nonzero((X == 1).astype(np.int))
+        n_zeros = np.count_nonzero((X == 0).astype(np.int8))
+        n_ones = np.count_nonzero((X == 1).astype(np.int8))
         assert X.size == n_zeros + n_ones, (
             "{X.size} is not equal to {n_zeros} plus {n_ones}"
         )
@@ -103,7 +103,7 @@ class Bernoulli(RandomVariable):
         self.mu.n_ones += n_ones
 
     def _pdf(self, X):
-        assert isinstance(mu, np.ndarray)
+        assert isinstance(self.mu, np.ndarray)
         return np.prod(
             self.mu ** X * (1 - self.mu) ** (1 - X)
         )
@@ -112,12 +112,12 @@ class Bernoulli(RandomVariable):
         if isinstance(self.mu, np.ndarray):
             return (
                 self.mu > np.random.uniform(size=(sample_size,) + self.shape)
-            ).astype(np.int)
+            ).astype(np.int8)
         elif isinstance(self.mu, Beta):
             return (
                 self.mu.n_ones / (self.mu.n_ones + self.mu.n_zeros)
                 > np.random.uniform(size=(sample_size,) + self.shape)
-            ).astype(np.int)
+            ).astype(np.int8)
         elif isinstance(self.mu, RandomVariable):
             return (
                 self.mu.draw(sample_size)
